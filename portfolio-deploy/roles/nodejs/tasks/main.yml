@@ -1,4 +1,0 @@
----
-# TODO : ajouter le dépôt NodeSource pour Node.js {{ node_major }}
-# TODO : installer nodejs (ansible.builtin.apt)
-# TODO : installer pm2 globalement (community.general.npm, global: true)

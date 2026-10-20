@@ -1,0 +1,48 @@
+---
+- name: Créer le dossier de l'application
+  ansible.builtin.file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: "0755"
+
+- name: Cloner ou mettre à jour le dépôt
+  ansible.builtin.git:
+    repo: "{{ app_repo }}"
+    dest: "{{ app_dir }}"
+    version: "{{ app_version }}"
+    force: true
+  become_user: "{{ app_user }}"
+  register: git_result
+  notify: Restart app
+
+- name: Installer les dépendances (npm ci)
+  ansible.builtin.command: npm ci
+  args:
+    chdir: "{{ app_dir }}/{{ app_subdir }}"
+  become_user: "{{ app_user }}"
+  when: git_result.changed
+
+- name: Build de l'application
+  ansible.builtin.command: npm run build
+  args:
+    chdir: "{{ app_dir }}/{{ app_subdir }}"
+  become_user: "{{ app_user }}"
+  when: git_result.changed
+
+- name: Vérifier si l'application tourne dans PM2
+  ansible.builtin.command: pm2 describe {{ app_name }}
+  become_user: "{{ app_user }}"
+  register: pm2_status
+  failed_when: false
+  changed_when: false
+
+- name: Démarrer l'application dans PM2
+  ansible.builtin.command: pm2 start npm --name {{ app_name }} -- start
+  args:
+    chdir: "{{ app_dir }}/{{ app_subdir }}"
+  environment:
+    PORT: "{{ app_port }}"
+  become_user: "{{ app_user }}"
+  when: pm2_status.rc != 0

@@ -1,5 +1,5 @@
 ---
-- name: Déploiement du portfolio Next.js
+- name: Déploiement du portfolio
   hosts: web
   become: true
   roles:

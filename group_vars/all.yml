@@ -1,0 +1,10 @@
+---
+app_repo: "https://github.com/nourkidoudi/tp-devops.git"
+app_version: "main"
+app_dir: "/opt/portfolio"
+app_subdir: "portfolio-next"
+app_port: 3000
+server_name: "portfolio.local"
+app_user: "deploy"
+app_name: "portfolio"
+node_major: 20

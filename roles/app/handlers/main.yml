@@ -1,0 +1,6 @@
+---
+- name: Restart app
+  ansible.builtin.command: pm2 restart {{ app_name }} --update-env
+  environment:
+    PORT: "{{ app_port }}"
+  become_user: "{{ app_user }}"

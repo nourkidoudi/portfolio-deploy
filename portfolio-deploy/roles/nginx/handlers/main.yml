@@ -1,2 +1,0 @@
----
-# TODO : handler "reload nginx" (ansible.builtin.service, state: reloaded)
